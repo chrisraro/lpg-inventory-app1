@@ -1,11 +1,13 @@
-import { supabase } from '@/utils/supabaseClient'
+import { createClient } from '@/utils/supabaseServer'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    // Attempt to fetch data from the 'inventory_items' table
+    const supabase = createClient()
+    
+    // Test database connection by fetching cylinder types
     const { data, error } = await supabase
-      .from('inventory_items')
+      .from('cylinder_types')
       .select('*')
       .limit(1)
 
