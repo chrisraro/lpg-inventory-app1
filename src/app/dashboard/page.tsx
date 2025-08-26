@@ -14,9 +14,9 @@ export default function Dashboard() {
   // Calculate statistics
   const stats = {
     total: cylinders.length,
-    inStock: cylinders.filter(c => c.status === 'in_stock').length,
-    dispatched: cylinders.filter(c => c.status === 'dispatched').length,
-    delivered: cylinders.filter(c => c.status === 'delivered').length,
+    inStock: cylinders.filter(c => c?.status === 'in_stock').length,
+    dispatched: cylinders.filter(c => c?.status === 'dispatched').length,
+    delivered: cylinders.filter(c => c?.status === 'delivered').length,
   }
 
   const handleScan = () => {
@@ -40,10 +40,10 @@ export default function Dashboard() {
             <h1 className="text-3xl font-bold text-gray-900">LPG Inventory Dashboard</h1>
             <div className="flex items-center space-x-4">
               <span className="text-gray-700">
-                Welcome, {profile?.full_name || user?.email}
+                Welcome, {profile?.full_name || user?.email || 'User'}
               </span>
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
+                {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'User'}
               </span>
             </div>
           </div>
@@ -221,7 +221,7 @@ export default function Dashboard() {
                               cylinder.status === 'dispatched' ? 'bg-yellow-100 text-yellow-800' : 
                               cylinder.status === 'delivered' ? 'bg-blue-100 text-blue-800' : 
                               'bg-gray-100 text-gray-800'}`}>
-                            {cylinder.status.charAt(0).toUpperCase() + cylinder.status.slice(1)}
+                            {cylinder.status?.charAt(0).toUpperCase() + cylinder.status?.slice(1)}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

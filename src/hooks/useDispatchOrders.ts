@@ -16,6 +16,12 @@ export function useDispatchOrders() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    // If supabase client is not initialized, set loading to false
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
     fetchOrders()
 
     // Set up real-time subscription
@@ -61,7 +67,9 @@ export function useDispatchOrders() {
       .subscribe()
 
     return () => {
-      supabase.removeChannel(channel)
+      if (supabase) {
+        supabase.removeChannel(channel)
+      }
     }
   }, [])
 
@@ -86,6 +94,12 @@ export function useDispatchOrder(id: number) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    // If supabase client is not initialized, set loading to false
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
     fetchOrder()
 
     // Set up real-time subscription for this specific order
@@ -106,7 +120,9 @@ export function useDispatchOrder(id: number) {
       .subscribe()
 
     return () => {
-      supabase.removeChannel(channel)
+      if (supabase) {
+        supabase.removeChannel(channel)
+      }
     }
   }, [id])
 

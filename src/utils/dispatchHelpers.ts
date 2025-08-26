@@ -2,6 +2,9 @@ import { supabase, DispatchOrder, Cylinder } from '@/utils/supabaseClient'
 
 // Get all dispatch orders
 export async function getDispatchOrders() {
+  // If supabase client is not initialized, return empty array
+  if (!supabase) return []
+
   const { data, error } = await supabase
     .from('dispatch_orders')
     .select(`
@@ -12,11 +15,14 @@ export async function getDispatchOrders() {
     .order('created_at', { ascending: false })
 
   if (error) throw error
-  return data
+  return data || []
 }
 
 // Get a specific dispatch order by ID
 export async function getDispatchOrder(id: number) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('dispatch_orders')
     .select(`
@@ -33,6 +39,9 @@ export async function getDispatchOrder(id: number) {
 
 // Create a new dispatch order
 export async function createDispatchOrder(order: Omit<DispatchOrder, 'id' | 'created_at' | 'dispatched_at' | 'delivered_at' | 'returned_at'>) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('dispatch_orders')
     .insert([order])
@@ -45,6 +54,9 @@ export async function createDispatchOrder(order: Omit<DispatchOrder, 'id' | 'cre
 
 // Update a dispatch order
 export async function updateDispatchOrder(id: number, updates: Partial<DispatchOrder>) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('dispatch_orders')
     .update(updates)
@@ -58,6 +70,9 @@ export async function updateDispatchOrder(id: number, updates: Partial<DispatchO
 
 // Add a cylinder to a dispatch order
 export async function addCylinderToOrder(orderId: number, cylinderId: number) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('dispatch_order_items')
     .insert([
@@ -75,6 +90,9 @@ export async function addCylinderToOrder(orderId: number, cylinderId: number) {
 
 // Remove a cylinder from a dispatch order
 export async function removeCylinderFromOrder(orderId: number, cylinderId: number) {
+  // If supabase client is not initialized, return
+  if (!supabase) return
+
   const { error } = await supabase
     .from('dispatch_order_items')
     .delete()
@@ -86,6 +104,9 @@ export async function removeCylinderFromOrder(orderId: number, cylinderId: numbe
 
 // Get cylinders in a dispatch order
 export async function getCylindersInOrder(orderId: number) {
+  // If supabase client is not initialized, return empty array
+  if (!supabase) return []
+
   const { data: items, error: itemsError } = await supabase
     .from('dispatch_order_items')
     .select('cylinder_id')

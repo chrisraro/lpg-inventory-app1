@@ -23,6 +23,12 @@ export default function ProtectedRoute({ children, requiredRole }: ProtectedRout
     }
   }, [user, loading, router, requiredRole])
 
+  // If we're in a server environment or Supabase is not configured, render children
+  // This prevents build errors when environment variables are not set
+  if (typeof window === 'undefined' || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return <>{children}</>
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">

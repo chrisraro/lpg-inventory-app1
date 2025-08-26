@@ -7,6 +7,12 @@ export function useCylinders() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    // If supabase client is not initialized, set loading to false
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
     // Initial fetch
     fetchCylinders()
 
@@ -53,11 +59,19 @@ export function useCylinders() {
       .subscribe()
 
     return () => {
-      supabase.removeChannel(channel)
+      if (supabase) {
+        supabase.removeChannel(channel)
+      }
     }
   }, [])
 
   async function fetchCylinders() {
+    // If supabase client is not initialized, return early
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
     try {
       setLoading(true)
       const { data, error } = await supabase

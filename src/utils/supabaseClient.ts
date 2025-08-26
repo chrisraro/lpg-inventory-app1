@@ -85,8 +85,8 @@ export type DispatchOrderItem = {
   cylinder_id: number
 }
 
-// Initialize Supabase client
+// Initialize Supabase client with fallback values to prevent build errors
 export const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 )

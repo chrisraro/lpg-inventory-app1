@@ -5,6 +5,11 @@ export async function GET() {
   try {
     const supabase = createClient()
     
+    // Check if Supabase client was created successfully
+    if (!supabase) {
+      return NextResponse.json({ error: 'Supabase client not initialized' }, { status: 500 })
+    }
+    
     // Test database connection by fetching dispatch orders
     const { data, error } = await supabase
       .from('dispatch_orders')

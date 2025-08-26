@@ -2,6 +2,9 @@ import { supabase, Cylinder, Customer, CylinderType, Profile, DispatchOrder } fr
 
 // User profile functions
 export async function getProfile(userId: string) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
@@ -13,6 +16,9 @@ export async function getProfile(userId: string) {
 }
 
 export async function updateProfile(userId: string, updates: Partial<Profile>) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('profiles')
     .update(updates)
@@ -26,6 +32,9 @@ export async function updateProfile(userId: string, updates: Partial<Profile>) {
 
 // Cylinder functions
 export async function getCylinders() {
+  // If supabase client is not initialized, return empty array
+  if (!supabase) return []
+
   const { data, error } = await supabase
     .from('cylinders')
     .select(`
@@ -36,10 +45,13 @@ export async function getCylinders() {
     .order('created_at', { ascending: false })
 
   if (error) throw error
-  return data
+  return data || []
 }
 
 export async function getCylinderBySerial(serialNumber: string) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('cylinders')
     .select(`
@@ -55,6 +67,9 @@ export async function getCylinderBySerial(serialNumber: string) {
 }
 
 export async function createCylinder(cylinder: Omit<Cylinder, 'id' | 'created_at' | 'updated_at'>) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('cylinders')
     .insert([cylinder])
@@ -66,6 +81,9 @@ export async function createCylinder(cylinder: Omit<Cylinder, 'id' | 'created_at
 }
 
 export async function updateCylinderStatus(cylinderId: number, status: Cylinder['status']) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('cylinders')
     .update({ status })
@@ -79,16 +97,22 @@ export async function updateCylinderStatus(cylinderId: number, status: Cylinder[
 
 // Customer functions
 export async function getCustomers() {
+  // If supabase client is not initialized, return empty array
+  if (!supabase) return []
+
   const { data, error } = await supabase
     .from('customers')
     .select('*')
     .order('name')
 
   if (error) throw error
-  return data
+  return data || []
 }
 
 export async function createCustomer(customer: Omit<Customer, 'id' | 'created_at' | 'updated_at'>) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('customers')
     .insert([customer])
@@ -101,17 +125,23 @@ export async function createCustomer(customer: Omit<Customer, 'id' | 'created_at
 
 // Cylinder type functions
 export async function getCylinderTypes() {
+  // If supabase client is not initialized, return empty array
+  if (!supabase) return []
+
   const { data, error } = await supabase
     .from('cylinder_types')
     .select('*')
     .order('name')
 
   if (error) throw error
-  return data
+  return data || []
 }
 
 // Dispatch order functions
 export async function getDispatchOrders() {
+  // If supabase client is not initialized, return empty array
+  if (!supabase) return []
+
   const { data, error } = await supabase
     .from('dispatch_orders')
     .select(`
@@ -122,10 +152,13 @@ export async function getDispatchOrders() {
     .order('created_at', { ascending: false })
 
   if (error) throw error
-  return data
+  return data || []
 }
 
 export async function createDispatchOrder(order: Omit<DispatchOrder, 'id' | 'created_at'>) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('dispatch_orders')
     .insert([order])
@@ -138,6 +171,9 @@ export async function createDispatchOrder(order: Omit<DispatchOrder, 'id' | 'cre
 
 // Authentication functions
 export async function signInWithEmail(email: string, password: string) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -148,6 +184,9 @@ export async function signInWithEmail(email: string, password: string) {
 }
 
 export async function signUpWithEmail(email: string, password: string, fullName: string) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -163,6 +202,9 @@ export async function signUpWithEmail(email: string, password: string, fullName:
 }
 
 export async function signOut() {
+  // If supabase client is not initialized, return
+  if (!supabase) return
+
   const { error } = await supabase.auth.signOut()
   if (error) throw error
 }

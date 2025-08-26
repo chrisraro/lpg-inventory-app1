@@ -19,35 +19,54 @@ export function useAuth() {
   })
 
   useEffect(() => {
+    // If supabase client is not initialized, set loading to false
+    if (!supabase) {
+      setSession({
+        user: null,
+        profile: null,
+        loading: false,
+      })
+      return
+    }
+
     // Get initial session
     const getSession = async () => {
-      const { data: { session: supabaseSession } } = await supabase.auth.getSession()
-      
-      if (supabaseSession?.user) {
-        try {
-          const profile = await getProfile(supabaseSession.user.id)
+      try {
+        const { data: { session: supabaseSession } } = await supabase.auth.getSession()
+        
+        if (supabaseSession?.user) {
+          try {
+            const profile = await getProfile(supabaseSession.user.id)
+            setSession({
+              user: {
+                id: supabaseSession.user.id,
+                email: supabaseSession.user.email || '',
+                role: profile?.role || 'delivery', // default role
+              },
+              profile,
+              loading: false,
+            })
+          } catch (error) {
+            console.error('Error fetching profile:', error)
+            setSession({
+              user: {
+                id: supabaseSession.user.id,
+                email: supabaseSession.user.email || '',
+                role: 'delivery', // default role
+              },
+              profile: null,
+              loading: false,
+            })
+          }
+        } else {
           setSession({
-            user: {
-              id: supabaseSession.user.id,
-              email: supabaseSession.user.email || '',
-              role: profile.role,
-            },
-            profile,
-            loading: false,
-          })
-        } catch (error) {
-          console.error('Error fetching profile:', error)
-          setSession({
-            user: {
-              id: supabaseSession.user.id,
-              email: supabaseSession.user.email || '',
-              role: 'delivery', // default role
-            },
+            user: null,
             profile: null,
             loading: false,
           })
         }
-      } else {
+      } catch (error) {
+        console.error('Error getting session:', error)
         setSession({
           user: null,
           profile: null,
@@ -67,7 +86,7 @@ export function useAuth() {
               user: {
                 id: supabaseSession.user.id,
                 email: supabaseSession.user.email || '',
-                role: profile.role,
+                role: profile?.role || 'delivery',
               },
               profile,
               loading: false,
@@ -95,7 +114,9 @@ export function useAuth() {
     })
 
     return () => {
-      subscription.unsubscribe()
+      if (subscription) {
+        subscription.unsubscribe()
+      }
     }
   }, [])
 
@@ -103,12 +124,19 @@ export function useAuth() {
 }
 
 async function getProfile(userId: string) {
+  // If supabase client is not initialized, return null
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', userId)
     .single<Profile>()
 
-  if (error) throw error
+  if (error) {
+    console.error('Error fetching profile:', error)
+    return null
+  }
+  
   return data
 }
