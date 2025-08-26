@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    // Attempt to fetch data from a table (replace 'test' with an actual table name if you have one)
+    // Attempt to fetch data from the 'inventory_items' table
     const { data, error } = await supabase
-      .from('test')
+      .from('inventory_items')
       .select('*')
       .limit(1)
 
